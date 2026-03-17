@@ -1,0 +1,118 @@
+.history {
+  position: relative;
+  padding: 6rem 0;
+  overflow: hidden;
+}
+
+.history__bg {
+  position: absolute;
+  inset: 0;
+  background: var(--navy);
+  background-image:
+    linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.history .container {
+  position: relative;
+  z-index: 1;
+}
+
+.history .divider {
+  margin-bottom: 1.5rem;
+}
+
+.history__intro {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: rgba(255,255,255,0.65);
+  font-style: italic;
+  max-width: 580px;
+  line-height: 1.8;
+  margin-bottom: 4rem;
+}
+
+.history__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 680px;
+}
+
+.history__item {
+  display: flex;
+  gap: 2rem;
+}
+
+.history__marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.history__dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--navy);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.25);
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+}
+
+.history__line {
+  width: 2px;
+  flex: 1;
+  background: linear-gradient(to bottom, var(--gold), rgba(201,168,76,0.2));
+  min-height: 40px;
+}
+
+.history__card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,168,76,0.15);
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.history__card:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(201,168,76,0.35);
+}
+
+.history__year {
+  font-family: var(--font-caps);
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.history__card-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.6rem;
+}
+
+.history__card-desc {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+.history__placeholder {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.3);
+  margin-top: 2rem;
+  max-width: 500px;
+}
