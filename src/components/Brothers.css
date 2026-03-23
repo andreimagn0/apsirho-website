@@ -1,20 +1,17 @@
-/* ── Section ── */
+/* ── Brothers Section ── */
 .brothers {
-  padding: 0 0 6rem;
   background: var(--cream-dark);
 }
 
-/* ── Navy banner header ── */
+/* Banner */
 .brothers__banner {
   background: var(--navy);
   background-image:
     linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
   background-size: 60px 60px;
-  padding: 4rem 0 3.5rem;
-  margin-bottom: 3.5rem;
+  padding: 4rem 0 3rem;
   position: relative;
-  overflow: hidden;
 }
 .brothers__banner::after {
   content: '';
@@ -25,24 +22,14 @@
 }
 .brothers__banner .section-eyebrow { color: var(--gold-light); }
 .brothers__banner .section-title   { color: var(--white); }
-.brothers__banner .divider         { background: var(--gold); }
+.brothers__banner .divider          { background: var(--gold); }
 
-/* ── Setup notice ── */
-.brothers__setup-notice {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  background: rgba(201,168,76,0.08);
-  border: 1px solid rgba(201,168,76,0.25);
-  padding: 1rem 1.25rem;
-  margin-bottom: 2rem;
+/* Body */
+.brothers__body {
+  padding: 2.5rem 0 5rem;
 }
-.brothers__setup-icon { color: var(--gold); font-size: 1rem; line-height: 1.6; flex-shrink: 0; }
-.brothers__setup-notice p { font-family: var(--font-body); font-size: 0.88rem; color: var(--text-mid); line-height: 1.6; }
-.brothers__setup-notice code { font-family: monospace; background: rgba(10,22,40,0.08); padding: 0.1rem 0.35rem; font-size: 0.8rem; color: var(--navy); }
-.brothers__error { font-family: var(--font-body); font-size: 0.85rem; color: #a33; font-style: italic; margin-bottom: 1.5rem; }
 
-/* ── Filters ── */
+/* Filters */
 .brothers__filters {
   display: flex;
   align-items: center;
@@ -50,42 +37,49 @@
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
-.brothers__filter {
+.brothers__filter-btn {
   font-family: var(--font-caps);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   background: var(--cream);
   border: 1px solid var(--navy);
   color: var(--navy);
-  padding: 0.4rem 1.2rem;
+  padding: 0.45rem 1.1rem;
   cursor: pointer;
-  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  transition: all 0.2s;
 }
-.brothers__filter:hover { background: var(--navy); border-color: var(--gold); color: #ffffff; }
-.brothers__filter--active { background: var(--navy); border-color: var(--navy); color: #ffffff; }
-.brothers__count { font-family: var(--font-body); font-size: 0.82rem; color: var(--text-light); font-style: italic; margin-left: auto; }
+.brothers__filter-btn:hover {
+  background: var(--navy);
+  border-color: var(--gold);
+  color: var(--white);
+}
+.brothers__filter-btn--active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+.brothers__total {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--text-light);
+  font-style: italic;
+  margin-left: auto;
+}
 
-/* ── Loading ── */
-.brothers__loading { display: flex; align-items: center; gap: 0.75rem; padding: 2rem 0; color: var(--text-light); font-family: var(--font-body); font-size: 0.9rem; font-style: italic; }
-.brothers__spinner { width: 18px; height: 18px; border: 2px solid var(--cream-dark); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── Accordion wrapper ── */
+/* Accordion */
 .brothers__accordion {
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(10,22,40,0.1);
+  border: 1px solid rgba(10,22,40,0.15);
   overflow: hidden;
 }
-
-/* ── Each row ── */
 .brothers__row {
-  border-bottom: 1px solid rgba(10,22,40,0.1);
+  border-bottom: 1px solid rgba(10,22,40,0.12);
 }
-.brothers__row--last { border-bottom: none; }
+.brothers__row:last-child {
+  border-bottom: none;
+}
 
-/* ── Clickable class header ── */
+/* Class header button */
 .brothers__class-btn {
   width: 100%;
   background: var(--navy);
@@ -93,264 +87,261 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.1rem 1.75rem;
+  padding: 1rem 1.5rem;
   cursor: pointer;
-  transition: background var(--transition);
+  transition: background 0.2s;
   gap: 1rem;
 }
-.brothers__class-btn:hover { background: var(--navy-light); }
-.brothers__class-btn:hover .brothers__class-name { color: #ffffff; }
-.brothers__class-btn:hover .brothers__class-sub  { color: #ffffff; }
+.brothers__class-btn:hover {
+  background: var(--navy-light);
+}
 .brothers__row--open .brothers__class-btn {
   background: var(--navy-light);
   border-bottom: 2px solid var(--gold);
 }
 
-
 /* Left side of header */
-.brothers__class-left { display: flex; align-items: center; gap: 1.1rem; }
-
+.brothers__class-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 .brothers__class-symbol {
   font-family: var(--font-display);
-  font-size: 2.2rem;
+  font-size: 1.75rem;
   font-weight: 900;
   color: var(--gold);
-  line-height: 1;
-  width: 42px;
+  width: 2.5rem;
   text-align: center;
+  line-height: 1;
   flex-shrink: 0;
 }
-
-.brothers__class-labels { display: flex; flex-direction: column; gap: 0.15rem; text-align: left; }
-
+.brothers__class-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
 .brothers__class-name {
   font-family: var(--font-caps);
-  font-size: 1rem;
-  letter-spacing: 0.14em;
-  color: #000000;
-  line-height: 1.2;
-  transition: color var(--transition);
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  color: var(--white);
+  transition: color 0.2s;
 }
-
-.brothers__class-sub {
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  color: var(--text-light);
+.brothers__class-fullname {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
   font-style: italic;
-  transition: color var(--transition);
+  color: var(--gold-light);
+  letter-spacing: 0.03em;
+  transition: color 0.2s;
+}
+.brothers__class-crossed {
+  font-family: var(--font-caps);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.brothers__class-btn:hover .brothers__class-crossed {
+  color: rgba(255,255,255,0.85);
 }
 
 /* Right side of header */
-.brothers__class-right { display: flex; align-items: center; gap: 1.25rem; flex-shrink: 0; }
+.brothers__class-right {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}
+.brothers__class-count {
+  font-family: var(--font-caps);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+.brothers__class-btn:hover .brothers__class-count {
+  color: rgba(255,255,255,0.7);
+}
 
 /* Avatar stack */
-.brothers__avatar-stack { display: flex; align-items: center; }
-.brothers__stack-avatar,
-.brothers__stack-more {
-  width: 30px;
-  height: 30px;
+.brothers__avatar-stack {
+  display: flex;
+  align-items: center;
+}
+.brothers__stack-av {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 2px solid var(--navy);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  margin-left: -8px;
-  position: relative;
-  transition: transform var(--transition);
+  margin-left: -7px;
+  background: var(--navy-light);
+  color: var(--gold);
+  flex-shrink: 0;
 }
-.brothers__stack-avatar:first-child { margin-left: 0; }
-.brothers__stack-avatar { background: var(--navy-light); color: var(--gold); }
-.brothers__stack-avatar--alumni { background: var(--text-mid); color: rgba(255,255,255,0.7); }
-.brothers__stack-more { background: rgba(201,168,76,0.15); color: var(--gold); font-size: 0.6rem; }
-
-.brothers__class-btn:hover .brothers__stack-avatar,
-.brothers__class-btn:hover .brothers__stack-more { transform: translateY(-2px); }
+.brothers__stack-av:first-child { margin-left: 0; }
+.brothers__stack-av--alum {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.35);
+}
+.brothers__stack-av--more {
+  background: rgba(201,168,76,0.15);
+  color: var(--gold);
+  font-size: 0.55rem;
+}
 
 /* Chevron */
 .brothers__chevron {
-  color: rgba(255,255,255,0.4);
-  transition: transform var(--transition), color var(--transition);
+  color: rgba(255,255,255,0.35);
+  transition: transform 0.25s, color 0.25s;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
-.brothers__chevron--open { transform: rotate(180deg); color: var(--gold); }
+.brothers__row--open .brothers__chevron {
+  transform: rotate(180deg);
+  color: var(--gold);
+}
 
-/* ── Animated accordion panel ── */
+/* ── Cards panel ── */
 .brothers__panel {
-  overflow: hidden;
-  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   background: var(--cream);
+  padding: 1.5rem;
 }
-
-.brothers__panel-inner { padding: 1.75rem; }
-
-/* ── 2-col card grid ── */
-.brothers__grid {
+.brothers__cards-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 1rem;
 }
 
-/* ── Individual brother card ── */
+/* Individual card */
 .brothers__card {
   background: var(--white);
   border: 1px solid var(--cream-dark);
   overflow: hidden;
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 .brothers__card:hover {
   transform: translateY(-3px);
-  box-shadow: var(--shadow-md);
-  border-color: rgba(201,168,76,0.4);
+  box-shadow: 0 8px 24px rgba(10,22,40,0.12);
 }
 
-/* Card top bar */
+/* Card top — navy bar with avatar + name */
 .brothers__card-top {
   background: var(--navy);
-  padding: 1.1rem 1.25rem;
+  padding: 0.85rem 1rem;
   display: flex;
-  align-items: flex-start;
-  gap: 1rem;
+  align-items: center;
+  gap: 0.75rem;
 }
-
-.brothers__avatar {
-  width: 48px;
-  height: 48px;
+.brothers__card--alumni .brothers__card-top {
+  background: linear-gradient(135deg, #1e2e44, #2a3a52);
+}
+.brothers__card-avatar {
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: rgba(201,168,76,0.15);
+  border: 2px solid rgba(201,168,76,0.3);
   color: var(--gold);
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 2px solid rgba(201,168,76,0.3);
 }
-.brothers__avatar--alumni {
-  background: rgba(255,255,255,0.08);
-  color: rgba(255,255,255,0.5);
+.brothers__card--alumni .brothers__card-avatar {
+  background: rgba(255,255,255,0.06);
   border-color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.4);
 }
-
-.brothers__card-header-info { display: flex; flex-direction: column; gap: 0.4rem; min-width: 0; }
-
-.brothers__name {
+.brothers__card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.brothers__card-name {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--white);
   line-height: 1.25;
 }
-
-.brothers__role-badge {
-  display: inline-block;
+.brothers__card-bond {
   font-family: var(--font-caps);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--navy);
-  background: var(--gold);
-  padding: 0.2rem 0.6rem;
-  align-self: flex-start;
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  opacity: 0.7;
+}
+.brothers__card--alumni .brothers__card-bond {
+  color: rgba(255,255,255,0.3);
 }
 
 /* Card body — detail rows */
 .brothers__card-body {
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
 }
-
-.brothers__detail-row {
+.brothers__card-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid rgba(10,22,40,0.05);
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(10,22,40,0.06);
 }
-.brothers__detail-row:last-child { border-bottom: none; padding-bottom: 0; }
-
-.brothers__detail-label {
+.brothers__card-row:last-child {
+  border-bottom: none;
+}
+.brothers__card-label {
   font-family: var(--font-caps);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.18em;
   color: var(--text-light);
   text-transform: uppercase;
   flex-shrink: 0;
 }
-
-.brothers__detail-value {
+.brothers__card-val {
   font-family: var(--font-body);
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   color: var(--navy);
   text-align: right;
   line-height: 1.3;
 }
-
-.brothers__status-badge {
-  font-family: var(--font-caps);
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 0.2rem 0.55rem;
-}
-.brothers__status-badge--active { color: #2d6a3f; background: #e6f4eb; border: 1px solid #b7ddc3; }
-.brothers__status-badge--alumni { color: var(--text-mid); background: var(--cream-dark); border: 1px solid rgba(10,22,40,0.12); }
-
-/* ── Responsive ── */
-@media (max-width: 640px) {
-  .brothers__grid { grid-template-columns: 1fr; }
-  .brothers__class-btn { padding: 1rem 1.25rem; }
-  .brothers__avatar-stack { display: none; }
-  .brothers__class-symbol { font-size: 1.6rem; width: 32px; }
-}
-
-/* ── Alumni card variant ── */
-.brothers__card--alumni .brothers__card-top {
-  background: #2a3a52;
-}
-.brothers__card--alumni {
-  border-color: rgba(10,22,40,0.12);
-  opacity: 0.92;
-}
-.brothers__card--alumni .brothers__card-top {
-  background: linear-gradient(135deg, #1e2e44 0%, #2a3a52 100%);
-}
-.brothers__alumni-tag {
-  font-family: var(--font-caps);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+.brothers__card-nick {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-style: italic;
   color: var(--gold);
-  opacity: 0.7;
-  display: block;
-  margin-top: 2px;
+  text-align: right;
+  line-height: 1.3;
 }
 
-/* ── Class full name (e.g. "Alpha Sigma Souljas") ── */
-.brothers__class-fullname {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  font-style: italic;
-  color: var(--gold-light);
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-  transition: color var(--transition);
+/* Responsive */
+@media (max-width: 768px) {
+  .brothers__cards-grid {
+    grid-template-columns: 1fr 1fr;
+  }
 }
-.brothers__class-btn:hover .brothers__class-fullname {
-  color: rgba(255,255,255,0.75);
-}
-
-/* ── Nickname value on card ── */
-.brothers__detail-value--nickname {
-  color: var(--gold) !important;
-  font-style: italic;
-  font-family: var(--font-display);
+@media (max-width: 480px) {
+  .brothers__cards-grid {
+    grid-template-columns: 1fr;
+  }
 }

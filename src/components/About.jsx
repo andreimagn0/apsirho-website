@@ -51,7 +51,7 @@ export default function About() {
               {
                 icon: '❖',
                 title: 'Strength',
-                desc: 'To be able to endure and overcome both mental and physical challenges that present itself during a brother's lifetime.',
+                desc: 'To be able to endure and overcome both mental and physical challenges that present itself during a brother&apos;s lifetime.',
               },
             ].map((p) => (
               <div className="about__pillar" key={p.title}>

@@ -4,7 +4,7 @@ import './Navbar.css';
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'History', href: '#history' },
-  { label: 'Brothers', href: '#brothers' },
+  { label: 'Brhothers', href: '#brothers' },
   { label: 'Archive', href: '#archive' },
   { label: 'Newsletter', href: '#newsletter' },
   { label: 'Contact', href: '#contact' },

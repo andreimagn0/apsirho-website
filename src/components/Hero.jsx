@@ -32,35 +32,22 @@ export default function Hero() {
           Always &nbsp;·&nbsp; Be &nbsp;·&nbsp; Bold &nbsp;·&nbsp; And &nbsp;·&nbsp; Strong
         </p>
 
-        <div className="hero__divider fade-up" style={{ animationDelay: '0.65s', opacity: 0 }} />
-
         <p className="hero__tagline fade-up" style={{ animationDelay: '0.75s', opacity: 0 }}>
           Brotherhood through service, culture, and scholarship.
         </p>
-
-        <div className="hero__pillars fade-up" style={{ animationDelay: '0.85s', opacity: 0 }}>
-          {['Brhotherhood','Academics','Prosperity','Strength'].map((p, i) => (
-            <div key={p} className="hero__pillar">
-              <span className="hero__pillar-name">{p}</span>
-              {i < 3 && <span className="hero__pillar-sep">·</span>}
-            </div>
-          ))}
-        </div>
 
         <div className="hero__actions fade-up" style={{ animationDelay: '1.0s', opacity: 0 }}>
           <button className="hero__btn hero__btn--primary" onClick={() => handleScroll('#contact')}>
             Rush ΑΨΡ
           </button>
+          <div className="hero__divider-vertical" />
           <button className="hero__btn hero__btn--ghost" onClick={() => handleScroll('#about')}>
             Learn More
           </button>
         </div>
+
       </div>
 
-      <div className="hero__scroll-indicator fade-in" style={{ animationDelay: '1.4s', opacity: 0 }}>
-        <span className="hero__scroll-text">Scroll</span>
-        <div className="hero__scroll-line" />
-      </div>
     </section>
   );
 }

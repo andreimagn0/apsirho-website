@@ -22,7 +22,7 @@ export default function Footer() {
             {[
               ['About', '#about'],
               ['History', '#history'],
-              ['Brothers', '#brothers'],
+              ['Brhothers', '#brothers'],
               ['Newsletter', '#newsletter'],
               ['Contact', '#contact'],
             ].map(([label, href]) => (
@@ -37,12 +37,16 @@ export default function Footer() {
             <a href="mailto:sdsuapsirho@gmail.com" className="footer__email">
               sdsuapsirho@gmail.com
             </a>
+            <a href="mailto:sdsuapsirho@gmail.com" className="footer__email">
+              sdsuapsirho@gmail.com
+            </a>
+
             <p className="footer__location">San Diego, California</p>
           </div>
         </div>
 
         <div className="footer__bottom">
-          <p className="footer__motto">Always Be Bold And Strong · ABBΣ</p>
+          <p className="footer__motto">Always Be Bold And Strong · ABBAΣ</p>
           <p className="footer__copy">© {new Date().getFullYear()} Alpha Psi Rho – Alpha Chapter. All rights reserved.</p>
         </div>
       </div>

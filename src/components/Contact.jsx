@@ -85,9 +85,9 @@ export default function Contact() {
               <div className="contact__socials">
                 <p className="contact__social-label">Follow Us</p>
                 <div className="contact__social-links">
-                  <a href="#" className="contact__social-link">Instagram</a>
+                  <a href="https://www.instagram.com/sdsuapsirho/" className="contact__social-link">Instagram</a>
                   <span>·</span>
-                  <a href="#" className="contact__social-link">Facebook</a>
+                  <a href="#" className="contact__social-link">TikTok</a>
                   <span>·</span>
                   <a href="mailto:sdsuapsirho@gmail.com" className="contact__social-link">Email</a>
                 </div>

@@ -29,10 +29,16 @@
 }
 
 .hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;       
+  margin: 0 auto;          
+  padding: 0 1.5rem;       
   position: relative;
   z-index: 2;
-  padding: 2rem;
-  max-width: 700px;
 }
 
 .hero__eyebrow {
@@ -41,6 +47,7 @@
   letter-spacing: 0.3em;
   color: var(--gold);
   text-transform: uppercase;
+  margin-top: 2rem;
   margin-bottom: 2rem;
 }
 
@@ -76,11 +83,24 @@
   margin-bottom: 0;
 }
 
-.hero__divider {
-  width: 80px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 1.75rem auto;
+.hero__divider-vertical {
+  width: 1px;
+  height: 52px;
+  max-height: 52px;       /* ← add this */
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+  opacity: 0.5;
+  flex-shrink: 0;
+  overflow: hidden;       /* ← add this */
+}
+
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;    /* ← makes divider line up with buttons */
+  flex-wrap: wrap;
+  align-self: center;
+  width: auto;
 }
 
 .hero__tagline {
@@ -189,14 +209,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0;
   margin-bottom: 2rem;
-  flex-wrap: wrap;
+  width: 100%;
+  text-align: center;
 }
 
 .hero__pillar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0;
 }
 
@@ -207,10 +230,12 @@
   color: rgba(255,255,255,0.7);
   text-transform: uppercase;
   padding: 0 0.6rem;
+  white-space: nowrap;   /* ← stops individual words from breaking */
 }
 
 .hero__pillar-sep {
   color: var(--gold);
   opacity: 0.6;
   font-size: 0.75rem;
+  white-space: nowrap;   /* ← keeps separator with the text */
 }

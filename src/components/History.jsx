@@ -53,7 +53,7 @@ export default function History() {
         </div>
 
         <p className="history__placeholder">
-          <em>Want to add specific dates and founding stories? Replace the timeline content above with your chapter's actual history.</em>
+  
         </p>
       </div>
     </section>
