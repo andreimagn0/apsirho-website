@@ -37,9 +37,6 @@ export default function Footer() {
             <a href="mailto:sdsuapsirho@gmail.com" className="footer__email">
               sdsuapsirho@gmail.com
             </a>
-            <a href="mailto:sdsuapsirho@gmail.com" className="footer__email">
-              sdsuapsirho@gmail.com
-            </a>
 
             <p className="footer__location">San Diego, California</p>
           </div>

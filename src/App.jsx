@@ -10,17 +10,30 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Archive from './pages/Archive';
 import './pages/Archive.css';
+import AdminLogin from './pages/AdminLogin';
+import ArchiveUpload from './pages/ArchiveUpload';
 
 export default function App() {
   const [page, setPage] = useState('home');
 
-  // Simple hash-based routing
   useEffect(() => {
     const handleHash = () => {
-      setPage(window.location.hash === '#archive' ? 'archive' : 'home');
+      const hash = window.location.hash;
+
+      if (hash === '#archive') {
+        setPage('archive');
+      } else if (hash === '#admin-login') {
+        setPage('admin-login');
+      } else if (hash === '#admin-upload') {
+        setPage('admin-upload');
+      } else {
+        setPage('home');
+      }
     };
+
     window.addEventListener('hashchange', handleHash);
     handleHash();
+
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
@@ -29,6 +42,26 @@ export default function App() {
       <>
         <Navbar />
         <Archive />
+        <Footer />
+      </>
+    );
+  }
+
+  if (page === 'admin-login') {
+    return (
+      <>
+        <Navbar />
+        <AdminLogin />
+        <Footer />
+      </>
+    );
+  }
+
+  if (page === 'admin-upload') {
+    return (
+      <>
+        <Navbar />
+        <ArchiveUpload />
         <Footer />
       </>
     );

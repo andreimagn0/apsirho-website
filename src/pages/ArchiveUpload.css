@@ -1,0 +1,27 @@
+.archive-upload {
+  padding: 120px 0 80px;
+}
+
+.archive-upload__form {
+  display: grid;
+  gap: 16px;
+  max-width: 600px;
+}
+
+.archive-upload__form label {
+  display: grid;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.archive-upload__form input,
+.archive-upload__form select,
+.archive-upload__form textarea,
+.archive-upload__form button {
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.archive-upload__form button {
+  cursor: pointer;
+}
