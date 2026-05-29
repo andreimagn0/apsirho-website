@@ -1,6 +1,63 @@
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import './About.css';
 
 export default function About() {
+  const [eboard, setEboard] = useState([]);
+
+  useEffect(() => {
+  async function fetchExecutiveBoard() {
+    const { data: eboardData, error: eboardError } = await supabase
+      .from('executive_board')
+      .select('*')
+      .eq('is_visible', true)
+      .order('sort_order', { ascending: true });
+
+    const { data: brothersData, error: brothersError } = await supabase
+      .from('brothers')
+      .select('*');
+
+    console.log('EBOARD DATA:', eboardData);
+    console.log('EBOARD ERROR:', eboardError);
+    console.log('BROTHERS DATA:', brothersData);
+    console.log('BROTHERS ERROR:', brothersError);
+
+    if (eboardError || brothersError) {
+      console.error('Error fetching executive board:', eboardError || brothersError);
+      return;
+    }
+
+    const brothersById = {};
+
+    brothersData.forEach((brother) => {
+      brothersById[brother.id] = brother;
+    });
+
+    const mappedBoard = eboardData.map((row) => {
+      const brother = brothersById[row.brother_id];
+
+      return {
+        id: row.id,
+        role: row.position_title,
+        name: brother?.name || 'Vacant',
+        profileImageUrl: brother?.profile_image_url || null,
+      };
+    });
+
+  setEboard(mappedBoard);
+}
+
+    fetchExecutiveBoard();
+  }, []);
+
+  const initials = (name) =>
+    name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+
   return (
     <section id="about" className="about">
       <div className="container">
@@ -67,23 +124,26 @@ export default function About() {
 
         <div className="about__eboard">
           <p className="section-eyebrow" style={{ textAlign: 'center' }}>Leadership</p>
-          <h2 className="section-title" style={{ textAlign: 'center' }}>2025–2026 Executive Board</h2>
+          <h2 className="section-title" style={{ textAlign: 'center' }}>2026–2027 Executive Board</h2>
           <div className="divider center" />
 
           <div className="about__eboard-grid">
-            {[
-              { role: 'President', name: 'Jordan Louangxaysongkham' },
-              { role: 'Vice President', name: 'Carson Mandigma' },
-              { role: 'Secretary', name: 'Riley Coladilla' },
-              { role: 'Treasurer', name: 'Trevor Bananal' },
-              { role: 'Sergeant At Arms', name: 'Isiah Summerhill' },
-              { role: 'Director of Recruitment', name: 'Brandon Tam' },
-            ].map((member) => (
-              <div className="about__eboard-card" key={member.role}>
+            {eboard.map((member) => (
+              <div className="about__eboard-card" key={member.id}>
                 <div className="about__eboard-avatar">
-                  {member.name.split(' ').map(n => n[0]).join('').slice(0,2)}
+                  {member.profileImageUrl ? (
+                    <img
+                      src={member.profileImageUrl}
+                      alt={member.name}
+                      className="about__eboard-avatar-img"
+                    />
+                  ) : (
+                    initials(member.name)
+                  )}
                 </div>
+
                 <p className="about__eboard-role">{member.role}</p>
+
                 <p className="about__eboard-name">
                   {member.name.split(' ').map((part, i) => (
                     <span key={i}>{part}</span>

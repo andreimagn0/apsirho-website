@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabaseClient';
 import './ArchiveUpload.css';
 
 const CATEGORIES = ['Rush', 'Events', 'Formals', 'Retreats', 'Pledge Classes', 'Candids'];
@@ -117,9 +117,38 @@ export default function ArchiveUpload() {
   }
 
   // 🚫 Not allowed
-  if (!allowed) {
-    return <p>Admin access only.</p>;
-  }
+if (!allowed) {
+  return (
+    <section className="hero admin-login">
+      <div className="hero__texture" />
+      <div className="hero__overlay" />
+
+      <div className="admin-login__shell">
+        <div className="admin-login__card">
+          <p className="admin-login__eyebrow">Restricted Access</p>
+          <h1 className="admin-login__title">Admin Only</h1>
+          <div className="admin-login__divider" />
+
+          <p className="admin-login__subtitle">
+            You are logged in, but this page is restricted to admin users.
+          </p>
+
+          <div className="admin-access__actions">
+            <button
+              className="admin-login__button"
+              onClick={() => {
+                window.location.hash = '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            >
+              Return Home
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
   // ✅ Allowed → show upload form
   return (

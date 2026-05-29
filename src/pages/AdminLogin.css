@@ -1,0 +1,233 @@
+.admin-login {
+  min-height: 100vh;
+  padding: 140px 24px 80px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+  .hero__overlay {
+    opacity: 0.2;
+  }
+
+.admin-login__shell {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+}
+
+.admin-login__card {
+  width: min(100%, 700px);
+  background: #f3efe4;
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  padding: 52px 48px;
+  box-sizing: border-box;
+}
+
+.admin-login__eyebrow {
+  margin: 0 0 12px;
+  color: #c9a84c;
+  font-size: 0.85rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-family: var(--font-caps);
+  text-align: center;
+}
+
+.admin-login__title {
+  margin: 0;
+  color: #071a44;
+  font-size: clamp(3rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  font-weight: 700;
+  font-family: var(--font-display);
+  text-align: center;
+}
+
+.admin-login__divider {
+  width: 92px;
+  height: 3px;
+  background: #c9a84c;
+  margin: 26px auto 28px;
+}
+
+.admin-login__subtitle {
+  margin: 0 0 30px;
+  color: rgba(7, 26, 68, 0.8);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+.admin-login__form {
+  display: grid;
+  gap: 22px;
+}
+
+.admin-login__label {
+  display: grid;
+  gap: 10px;
+  color: #071a44;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-family: var(--font-caps);
+  text-align: center;
+}
+
+.admin-login__form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 20px;
+  border: 1px solid rgba(7, 26, 68, 0.18);
+  background: #f8f6f0;
+  color: #071a44;
+  font-size: 1rem;
+  font-family: var(--font-body);
+}
+
+.admin-login__form input:focus {
+  outline: none;
+  border-color: #c9a84c;
+  box-shadow: 0 0 0 2px rgba(201, 168, 76, 0.12);
+}
+
+.admin-login__form input::placeholder {
+  color: rgba(7, 26, 68, 0.35);
+}
+
+.admin-login__button {
+  margin-top: 6px;
+  padding: 18px 24px;
+  border: none;
+  background: #c9a84c;
+  color: #071a44;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: var(--font-caps);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.admin-login__button:hover {
+  background: #d4b45b;
+  transform: translateY(-1px);
+}
+
+.admin-login__button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.admin-login__message {
+  margin: 0;
+  color: #071a44;
+  font-size: 0.98rem;
+  font-family: var(--font-body);
+  text-align: center;
+}
+
+.admin-access__actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .hero__overlay {
+    opacity: 0.2;
+  }
+  .admin-login {
+    padding: 100px 14px 36px;
+  }
+
+  .admin-login__card {
+    width: 100%;
+    padding: 28px 18px;
+  }
+
+  .admin-login__title {
+    font-size: clamp(2.4rem, 10vw, 3.5rem);
+  }
+
+  .admin-login__eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    margin-bottom: 10px;
+  }
+
+  .admin-login__divider {
+    width: 64px;
+    margin: 18px auto 20px;
+  }
+
+  .admin-login__subtitle {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    margin-bottom: 22px;
+  }
+
+  .admin-login__form {
+    gap: 16px;
+  }
+
+  .admin-login__label {
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+
+  .admin-login__form input {
+    padding: 14px 14px;
+    font-size: 0.98rem;
+  }
+
+  .admin-login__button {
+    padding: 15px 16px;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-login {
+    padding: 92px 10px 28px;
+  }
+
+  .admin-login__card {
+    padding: 22px 14px;
+  }
+
+  .admin-login__title {
+    font-size: clamp(2rem, 11vw, 2.9rem);
+    line-height: 0.98;
+  }
+
+  .admin-login__subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+  }
+
+  .admin-login__form {
+    gap: 14px;
+  }
+
+  .admin-login__label {
+    font-size: 0.76rem;
+  }
+
+  .admin-login__form input {
+    padding: 13px 12px;
+    font-size: 0.95rem;
+  }
+
+  .admin-login__button {
+    padding: 14px 14px;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+  }
+}

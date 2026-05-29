@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabaseClient';
 import './Archive.css';
 
 const CATEGORIES = ['All', 'Rush', 'Events', 'Formals', 'Retreats', 'Pledge Classes', 'Candids'];

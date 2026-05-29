@@ -124,6 +124,18 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 1rem;
+  overflow: hidden;
+}
+
+
+.about__eboard-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1.15);
+  border-radius: 50%;
+  display: block;
 }
 
 .about__eboard-role {

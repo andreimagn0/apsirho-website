@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import './Navbar.css';
 
 const NAV_LINKS = [
@@ -13,6 +14,7 @@ const NAV_LINKS = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -20,14 +22,39 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
   const handleNavClick = (href) => {
     setOpen(false);
-    if (href === '#archive') {
-      window.location.hash = 'archive';
+
+    if (href === '#archive' || href === '#admin-login' || href === '#admin-upload') {
+      window.location.hash = href;
       return;
     }
-    // If on archive page, go home first
-    if (window.location.hash === '#archive') {
+
+    if (href === '#home') {
+      window.location.hash = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (
+      window.location.hash === '#archive' ||
+      window.location.hash === '#admin-login' ||
+      window.location.hash === '#admin-upload'
+    ) {
       window.location.hash = '';
       setTimeout(() => {
         const el = document.querySelector(href);
@@ -35,8 +62,18 @@ export default function Navbar() {
       }, 100);
       return;
     }
+
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setOpen(false);
+
+    // go to hero page
+    window.location.hash = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -61,6 +98,37 @@ export default function Navbar() {
               </button>
             </li>
           ))}
+
+          {!session ? (
+            <li>
+              <button
+                className="navbar__link"
+                onClick={() => handleNavClick('#admin-login')}
+              >
+                Login
+              </button>
+            </li>
+          ) : (
+            <>
+              <li>
+                <button
+                  className="navbar__link"
+                  onClick={() => handleNavClick('#admin-upload')}
+                >
+                  Admin Upload
+                </button>
+              </li>
+              <li>
+                <button
+                  className="navbar__link"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </li>
+            </>
+          )}
+
           <li>
             <button
               className="navbar__cta"
