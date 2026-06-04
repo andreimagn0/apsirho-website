@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: 'Newsletter', href: '#newsletter' },
   { label: 'Contact', href: '#contact' },
   { label: 'Admin', href: '#admin-brothers' },
+  
 ];
 
 const PAGE_ROUTES = [
@@ -17,6 +18,7 @@ const PAGE_ROUTES = [
   '#admin-login',
   '#admin-upload',
   '#admin-brothers',
+  '#admin-classes',
 ];
 
 export default function Navbar() {

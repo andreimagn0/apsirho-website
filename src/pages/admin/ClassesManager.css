@@ -1,0 +1,152 @@
+.classes-manager__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.classes-manager__eyebrow {
+  font-family: var(--font-caps);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.3rem;
+}
+
+.classes-manager__header h2 {
+  font-family: var(--font-display);
+  color: var(--navy);
+  font-size: 2rem;
+}
+
+.classes-manager__message {
+  background: var(--white);
+  border-left: 3px solid var(--gold);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+  color: var(--navy);
+}
+
+.classes-manager__grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.classes-manager__form {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.classes-manager__form h3 {
+  font-family: var(--font-display);
+  color: var(--navy);
+  margin-bottom: 0.5rem;
+}
+
+.classes-manager__form label {
+  font-family: var(--font-caps);
+  font-size: 0.65rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.classes-manager__form input {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  padding: 0.65rem;
+  border: 1px solid rgba(10,22,40,0.2);
+  background: var(--cream);
+  color: var(--navy);
+}
+
+.classes-manager__checks label {
+  flex-direction: row;
+  align-items: center;
+}
+
+.classes-manager__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.classes-manager__actions button,
+.classes-manager__outline-btn,
+.classes-manager__table button {
+  font-family: var(--font-caps);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--navy);
+  background: var(--navy);
+  color: var(--white);
+  padding: 0.55rem 0.8rem;
+  cursor: pointer;
+}
+
+.classes-manager__actions button[type='button'],
+.classes-manager__outline-btn {
+  background: transparent;
+  color: var(--navy);
+}
+
+.classes-manager__table-wrap {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+}
+
+.classes-manager__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.classes-manager__table th {
+  background: var(--navy);
+  color: var(--white);
+  font-family: var(--font-caps);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 0.85rem;
+}
+
+.classes-manager__table td {
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid var(--cream-dark);
+  color: var(--navy);
+}
+
+.classes-manager__table td:last-child {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.classes-manager__table button {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.58rem;
+}
+
+@media (max-width: 950px) {
+  .classes-manager__grid {
+    grid-template-columns: 1fr;
+  }
+}
