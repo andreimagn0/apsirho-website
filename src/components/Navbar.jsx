@@ -9,6 +9,14 @@ const NAV_LINKS = [
   { label: 'Archive', href: '#archive' },
   { label: 'Newsletter', href: '#newsletter' },
   { label: 'Contact', href: '#contact' },
+  { label: 'Admin', href: '#admin-brothers' },
+];
+
+const PAGE_ROUTES = [
+  '#archive',
+  '#admin-login',
+  '#admin-upload',
+  '#admin-brothers',
 ];
 
 export default function Navbar() {
@@ -39,7 +47,7 @@ export default function Navbar() {
   const handleNavClick = (href) => {
     setOpen(false);
 
-    if (href === '#archive' || href === '#admin-login' || href === '#admin-upload') {
+    if (PAGE_ROUTES.includes(href)) {
       window.location.hash = href;
       return;
     }
@@ -50,16 +58,14 @@ export default function Navbar() {
       return;
     }
 
-    if (
-      window.location.hash === '#archive' ||
-      window.location.hash === '#admin-login' ||
-      window.location.hash === '#admin-upload'
-    ) {
+    if (PAGE_ROUTES.includes(window.location.hash)) {
       window.location.hash = '';
+
       setTimeout(() => {
         const el = document.querySelector(href);
         if (el) el.scrollIntoView({ behavior: 'smooth' });
       }, 100);
+
       return;
     }
 
@@ -70,8 +76,6 @@ export default function Navbar() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setOpen(false);
-
-    // go to hero page
     window.location.hash = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -79,7 +83,14 @@ export default function Navbar() {
   return (
     <nav className={`navbar ${scrolled ? 'navbar--scrolled' : ''}`}>
       <div className="navbar__inner">
-        <a className="navbar__brand" href="#home" onClick={() => handleNavClick('#home')}>
+        <a
+          className="navbar__brand"
+          href="#home"
+          onClick={(e) => {
+            e.preventDefault();
+            handleNavClick('#home');
+          }}
+        >
           <span className="navbar__brand-greek">ΑΨΡ</span>
           <span className="navbar__brand-text">
             <span className="navbar__brand-name">Alpha Psi Rho</span>
@@ -119,10 +130,7 @@ export default function Navbar() {
                 </button>
               </li>
               <li>
-                <button
-                  className="navbar__link"
-                  onClick={handleLogout}
-                >
+                <button className="navbar__link" onClick={handleLogout}>
                   Logout
                 </button>
               </li>
@@ -140,11 +148,15 @@ export default function Navbar() {
         </ul>
 
         <button
-          className={`navbar__hamburger ${open ? 'navbar__hamburger--open' : ''}`}
+          className={`navbar__hamburger ${
+            open ? 'navbar__hamburger--open' : ''
+          }`}
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
-          <span /><span /><span />
+          <span />
+          <span />
+          <span />
         </button>
       </div>
     </nav>

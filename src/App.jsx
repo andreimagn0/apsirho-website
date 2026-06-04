@@ -2,16 +2,18 @@ import { useState, useEffect } from 'react';
 import './index.css';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import About from './components/About';
-import History from './components/History';
-import Brothers from './components/Brothers';
-import Newsletter from './components/Newsletter';
-import Contact from './components/Contact';
+import About from './pages/public/About';
+import History from './pages/public/History';
+import Brothers from './pages/public/Brothers';
+import Newsletter from './pages/public/Newsletter';
+import Contact from './pages/public/Contact';
 import Footer from './components/Footer';
-import Archive from './pages/Archive';
-import './pages/Archive.css';
-import AdminLogin from './pages/AdminLogin';
-import ArchiveUpload from './pages/ArchiveUpload';
+import Archive from './pages/public/Archive';
+import './pages/public/Archive.css';
+import AdminLogin from './pages/admin/AdminLogin';
+import ArchiveUpload from './pages/admin/ArchiveUpload';
+import BrothersManager from './pages/admin/BrothersManager';
+import ProtectedAdminRoute from './pages/admin/ProtectedAdminRoute';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -26,6 +28,8 @@ export default function App() {
         setPage('admin-login');
       } else if (hash === '#admin-upload') {
         setPage('admin-upload');
+      } else if (hash === '#admin-brothers') {
+        setPage('admin-brothers');
       } else {
         setPage('home');
       }
@@ -58,14 +62,17 @@ export default function App() {
   }
 
   if (page === 'admin-upload') {
-    return (
-      <>
-        <Navbar />
-        <ArchiveUpload />
-        <Footer />
-      </>
-    );
+    return <ArchiveUpload />;
   }
+
+  if (page === 'admin-brothers') {
+  return (
+    <ProtectedAdminRoute>
+      <BrothersManager />
+    </ProtectedAdminRoute>
+  );
+}
+
 
   return (
     <>

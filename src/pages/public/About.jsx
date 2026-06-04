@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase } from '../../lib/supabaseClient';
 import './About.css';
 
 export default function About() {
@@ -70,7 +70,6 @@ export default function About() {
 
         <p className="about__foundation">
           The Foundation of this Fraternity was created on Brotherhood, Academics, Prosperity, and Strength.
-          These ideas are to be preached and upheld by each Pledge Dogg to their fullest ability.
         </p>
 
         <div className="about__grid">
@@ -108,7 +107,7 @@ export default function About() {
               {
                 icon: '❖',
                 title: 'Strength',
-                desc: 'To be able to endure and overcome both mental and physical challenges that present itself during a brother&apos;s lifetime.',
+                desc: "To be able to endure and overcome both mental and physical challenges that present itself during a brother's lifetime."
               },
             ].map((p) => (
               <div className="about__pillar" key={p.title}>
