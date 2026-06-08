@@ -14,6 +14,9 @@ import AdminLogin from './pages/admin/AdminLogin';
 import ArchiveUpload from './pages/admin/ArchiveUpload';
 import BrothersManager from './pages/admin/BrothersManager';
 import ProtectedAdminRoute from './pages/admin/ProtectedAdminRoute';
+import ClassesManager from './pages/admin/ClassesManager';
+import ExecBoardManager from './pages/admin/ExecBoardManager';
+import NewsletterManager from './pages/admin/NewsletterManager';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -26,10 +29,16 @@ export default function App() {
         setPage('archive');
       } else if (hash === '#admin-login') {
         setPage('admin-login');
-      } else if (hash === '#admin-upload') {
-        setPage('admin-upload');
       } else if (hash === '#admin-brothers') {
         setPage('admin-brothers');
+      } else if (hash === '#admin-classes') {
+        setPage('admin-classes');
+      } else if (hash === '#admin-eboard') {
+        setPage('admin-eboard');
+      } else if (hash === '#admin-archives') {
+        setPage('admin-archives');
+      } else if (hash === '#admin-newsletter') {
+        setPage('admin-newsletter');
       } else {
         setPage('home');
       }
@@ -61,19 +70,42 @@ export default function App() {
     );
   }
 
-  if (page === 'admin-upload') {
-    return <ArchiveUpload />;
-  }
-
   if (page === 'admin-brothers') {
   return (
     <ProtectedAdminRoute>
       <BrothersManager />
     </ProtectedAdminRoute>
   );
-}
+  }
 
-
+  if (page === 'admin-classes') {
+    return (
+      <ProtectedAdminRoute>
+        <ClassesManager />
+      </ProtectedAdminRoute>
+    );
+  }
+  if (page === 'admin-eboard') {
+    return (
+      <ProtectedAdminRoute>
+        <ExecBoardManager />
+      </ProtectedAdminRoute>
+    );
+  }
+  if (page === 'admin-archives') {
+    return (
+      <ProtectedAdminRoute>
+        <ArchiveUpload />
+      </ProtectedAdminRoute>
+    );
+  }
+  if (page === 'admin-newsletter') {
+    return (
+      <ProtectedAdminRoute>
+        <NewsletterManager />
+      </ProtectedAdminRoute>
+    );
+  }
   return (
     <>
       <Navbar />

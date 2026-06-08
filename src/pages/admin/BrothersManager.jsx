@@ -22,6 +22,7 @@ export default function BrothersManager() {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState('');
+  const [photoFile, setPhotoFile] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -79,12 +80,60 @@ export default function BrothersManager() {
     setForm(emptyForm);
     setMessage('');
   }
+  function makeSafeFileName(value) {
+    return String(value || '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '_')
+      .replace(/[^a-z0-9._]/g, '');
+  }
+
+function getSelectedClassName() {
+  const selectedClass = classes.find(
+    (cls) => cls.id === form.pledge_class_id
+  );
+
+  return selectedClass?.name || 'uncategorized';
+ }
+
+async function uploadBrotherPhoto() {
+  if (!photoFile) {
+    console.log('No new photo selected. Keeping existing URL:', form.profile_image_url);
+    return form.profile_image_url || null;
+  }
+
+  const extension = photoFile.name.split('.').pop();
+  const classFolder = makeSafeFileName(getSelectedClassName());
+  const safeBondNo = makeSafeFileName(form.bond_no || 'unknown');
+  const safeBrotherName = makeSafeFileName(form.name || 'brother');
+
+  const filePath = `${classFolder}/${safeBondNo}_${safeBrotherName}.${extension}`;
+
+  console.log('Uploading brother photo to:', filePath);
+
+  const { data: uploadData, error: uploadError } = await supabase.storage
+    .from('brother-photos')
+    .upload(filePath, photoFile, {
+      cacheControl: '3600',
+      upsert: true,
+    });
+
+  if (uploadError) throw uploadError;
+
+  const { data } = supabase.storage
+    .from('brother-photos')
+    .getPublicUrl(filePath);
+
+  console.log('PUBLIC URL DATA:', data);
+
+  return data.publicUrl;
+}
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log('SAVE CLICKED');
-    console.log('FORM DATA:', form);
-    console.log('EDITING ID:', editingId);
+    const photoUrl = await uploadBrotherPhoto();
+    console.log('PHOTO FILE:', photoFile);
+    console.log('PHOTO URL:', photoUrl);
 
     const payload = {
       bond_no: form.bond_no,
@@ -92,7 +141,7 @@ export default function BrothersManager() {
       nickname: form.nickname || null,
       pledge_class_id: form.pledge_class_id || null,
       status: form.status,
-      profile_image_url: form.profile_image_url || null,
+      profile_image_url: photoUrl,
       sort_order: Number(form.sort_order) || 0,
       is_visible: form.is_visible,
       is_minimal: form.is_minimal,
@@ -108,10 +157,6 @@ export default function BrothersManager() {
           .from('brothers')
           .insert([payload])
           .select();
-
-    console.log('SUPABASE SAVE RESULT:', result);
-    console.log('SUPABASE SAVE DATA:', result.data);
-    console.log('SUPABASE SAVE ERROR:', result.error);
 
     if (result.error) {
       console.error(result.error);
@@ -216,6 +261,14 @@ export default function BrothersManager() {
                 <option value="Inactive">Inactive</option>
                 <option value="Memorial">Memorial</option>
               </select>
+            </label>
+            <label>
+              Upload Profile Photo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+              />
             </label>
 
             <label>

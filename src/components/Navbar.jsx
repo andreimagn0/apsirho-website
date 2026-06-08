@@ -9,22 +9,23 @@ const NAV_LINKS = [
   { label: 'Archive', href: '#archive' },
   { label: 'Newsletter', href: '#newsletter' },
   { label: 'Contact', href: '#contact' },
-  { label: 'Admin', href: '#admin-brothers' },
-  
 ];
 
 const PAGE_ROUTES = [
   '#archive',
   '#admin-login',
-  '#admin-upload',
   '#admin-brothers',
   '#admin-classes',
+  '#admin-eboard',
+  '#admin-archives',
+  '#admin-newsletter',
 ];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -32,15 +33,37 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  async function checkAdmin(currentSession) {
+    if (!currentSession?.user) {
+      setIsAdmin(false);
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('role, is_approved')
+      .eq('id', currentSession.user.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      setIsAdmin(false);
+      return;
+    }
+
+    setIsAdmin(data.role === 'admin' && data.is_approved === true);
+  }
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
+      checkAdmin(data.session);
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+    } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+      setSession(currentSession);
+      checkAdmin(currentSession);
     });
 
     return () => subscription.unsubscribe();
@@ -77,6 +100,8 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    setSession(null);
+    setIsAdmin(false);
     setOpen(false);
     window.location.hash = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -123,14 +148,17 @@ export default function Navbar() {
             </li>
           ) : (
             <>
-              <li>
-                <button
-                  className="navbar__link"
-                  onClick={() => handleNavClick('#admin-upload')}
-                >
-                  Admin Upload
-                </button>
-              </li>
+              {isAdmin && (
+                <li>
+                  <button
+                    className="navbar__link"
+                    onClick={() => handleNavClick('#admin-brothers')}
+                  >
+                    Admin
+                  </button>
+                </li>
+              )}
+
               <li>
                 <button className="navbar__link" onClick={handleLogout}>
                   Logout
