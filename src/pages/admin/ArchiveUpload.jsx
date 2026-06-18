@@ -25,6 +25,7 @@ export default function ArchiveUpload() {
   const [archives, setArchives] = useState([]);
   const [file, setFile] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
+  const [editingId, setEditingId] = useState(null);
   const [loadingUpload, setLoadingUpload] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -59,7 +60,23 @@ export default function ArchiveUpload() {
   function resetForm() {
     setFile(null);
     setForm(EMPTY_FORM);
+    setEditingId(null);
     setMessage('');
+  }
+
+  function startEdit(item) {
+    setEditingId(item.id);
+    setFile(null);
+    setForm({
+      title: item.title || '',
+      category: item.category || 'Rush',
+      year: item.year || '',
+      event_date: item.event_date || '',
+      caption: item.caption || '',
+      tall: item.tall ?? false,
+    });
+    setMessage('');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function makeSafeFileName(fileName) {
@@ -69,30 +86,42 @@ export default function ArchiveUpload() {
       .replace(/[^a-z0-9.\-_]/g, '');
   }
 
+  async function uploadArchiveImage() {
+    if (!file) return null;
+
+    const safeName = `${Date.now()}-${makeSafeFileName(file.name)}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('archive')
+      .upload(safeName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      });
+
+    if (uploadError) throw uploadError;
+
+    const { data: publicUrlData } = supabase.storage
+      .from('archive')
+      .getPublicUrl(safeName);
+
+    return {
+      imageUrl: publicUrlData.publicUrl,
+      storagePath: safeName,
+      fileName: file.name,
+    };
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setLoadingUpload(true);
     setMessage('');
 
     try {
-      if (!file) throw new Error('Please select an image.');
+      const uploadedImage = await uploadArchiveImage();
 
-      const safeName = `${Date.now()}-${makeSafeFileName(file.name)}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('archive')
-        .upload(safeName, file, {
-          cacheControl: '3600',
-          upsert: false,
-        });
-
-      if (uploadError) throw uploadError;
-
-      const { data: publicUrlData } = supabase.storage
-        .from('archive')
-        .getPublicUrl(safeName);
-
-      const imageUrl = publicUrlData.publicUrl;
+      if (!editingId && !uploadedImage) {
+        throw new Error('Please select an image.');
+      }
 
       const payload = {
         title: form.title,
@@ -100,25 +129,40 @@ export default function ArchiveUpload() {
         year: Number(form.year),
         event_date: form.event_date || null,
         caption: form.caption || null,
-        file_name: file.name,
-        image_url: imageUrl,
         tall: form.tall,
       };
 
-      const { error: insertError } = await supabase
-        .from('apsirho')
-        .insert([payload])
-        .select();
+      if (uploadedImage) {
+        payload.file_name = uploadedImage.fileName;
+        payload.image_url = uploadedImage.imageUrl;
+        payload.storage_path = uploadedImage.storagePath;
+      }
 
-      if (insertError) throw insertError;
+      const result = editingId
+        ? await supabase
+            .from('apsirho')
+            .update(payload)
+            .eq('id', editingId)
+            .select()
+        : await supabase
+            .from('apsirho')
+            .insert([payload])
+            .select();
 
-      setMessage('Archive uploaded.');
+      console.log('EDITING ID:', editingId);
+      console.log('SAVE RESULT:', result);
+      console.log('SAVE DATA:', result.data);
+      console.log('SAVE ERROR:', result.error);
+
+      if (result.error) throw result.error;
+
+      setMessage(editingId ? 'Archive updated.' : 'Archive uploaded.');
       resetForm();
       e.target.reset();
       fetchArchives();
     } catch (err) {
       console.error(err);
-      setMessage(err.message || 'Upload failed.');
+      setMessage(err.message || 'Save failed.');
     } finally {
       setLoadingUpload(false);
     }
@@ -127,19 +171,28 @@ export default function ArchiveUpload() {
   async function handleDelete(item) {
     if (!window.confirm(`Delete "${item.title}"?`)) return;
 
-    const { error } = await supabase
-      .from('apsirho')
-      .delete()
-      .eq('id', item.id);
+    try {
+      if (item.storage_path) {
+        const { error: storageError } = await supabase.storage
+          .from('archive')
+          .remove([item.storage_path]);
 
-    if (error) {
-      console.error(error);
-      setMessage('Delete failed.');
-      return;
+        if (storageError) throw storageError;
+      }
+
+      const { error: dbError } = await supabase
+        .from('apsirho')
+        .delete()
+        .eq('id', item.id);
+
+      if (dbError) throw dbError;
+
+      setMessage('Archive deleted.');
+      fetchArchives();
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message || 'Delete failed.');
     }
-
-    setMessage('Archive deleted.');
-    fetchArchives();
   }
 
   return (
@@ -152,7 +205,7 @@ export default function ArchiveUpload() {
           </div>
 
           <button className="archive-manager__outline-btn" onClick={resetForm}>
-            Reset
+            {editingId ? 'Cancel Edit' : 'Reset'}
           </button>
         </header>
 
@@ -160,15 +213,15 @@ export default function ArchiveUpload() {
 
         <div className="archive-manager__grid">
           <form onSubmit={handleSubmit} className="archive-manager__form">
-            <h3>Add Archive Item</h3>
+            <h3>{editingId ? 'Edit Archive Item' : 'Add Archive Item'}</h3>
 
             <label>
-              Image
+              Image {editingId && <span>Optional: upload to replace</span>}
               <input
                 type="file"
                 accept="image/*"
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
-                required
+                required={!editingId}
               />
             </label>
 
@@ -242,8 +295,13 @@ export default function ArchiveUpload() {
 
             <div className="archive-manager__actions">
               <button type="submit" disabled={loadingUpload}>
-                {loadingUpload ? 'Uploading...' : 'Upload Archive'}
+                {loadingUpload
+                  ? 'Saving...'
+                  : editingId
+                    ? 'Save Changes'
+                    : 'Upload Archive'}
               </button>
+
               <button type="button" onClick={resetForm}>
                 Cancel
               </button>
@@ -282,9 +340,8 @@ export default function ArchiveUpload() {
                     <td>{item.year}</td>
                     <td>{item.tall ? 'Yes' : 'No'}</td>
                     <td>
-                      <button onClick={() => handleDelete(item)}>
-                        Delete
-                      </button>
+                      <button onClick={() => startEdit(item)}>Edit</button>
+                      <button onClick={() => handleDelete(item)}>Delete</button>
                     </td>
                   </tr>
                 ))}
