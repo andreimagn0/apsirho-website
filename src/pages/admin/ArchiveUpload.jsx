@@ -91,6 +91,7 @@ export default function ArchiveUpload() {
 
     const safeName = `${Date.now()}-${makeSafeFileName(file.name)}`;
 
+
     const { error: uploadError } = await supabase.storage
       .from('archive')
       .upload(safeName, file, {
@@ -168,32 +169,44 @@ export default function ArchiveUpload() {
     }
   }
 
-  async function handleDelete(item) {
-    if (!window.confirm(`Delete "${item.title}"?`)) return;
+async function handleDelete(item) {
+  console.log('DELETE CLICKED:', item);
 
-    try {
-      if (item.storage_path) {
-        const { error: storageError } = await supabase.storage
-          .from('archive')
-          .remove([item.storage_path]);
+  const confirmed = window.confirm(`Delete "${item.title}"?`);
+  console.log('CONFIRMED:', confirmed);
 
-        if (storageError) throw storageError;
-      }
+  if (!confirmed) return;
 
-      const { error: dbError } = await supabase
-        .from('apsirho')
-        .delete()
-        .eq('id', item.id);
+  try {
+    if (item.storage_path) {
+      const { data: storageData, error: storageError } = await supabase.storage
+        .from('archive')
+        .remove([item.storage_path]);
 
-      if (dbError) throw dbError;
+      console.log('STORAGE DELETE DATA:', storageData);
+      console.log('STORAGE DELETE ERROR:', storageError);
 
-      setMessage('Archive deleted.');
-      fetchArchives();
-    } catch (err) {
-      console.error(err);
-      setMessage(err.message || 'Delete failed.');
+      if (storageError) throw storageError;
+    } else {
+      console.warn('No storage_path found. Only deleting database row.');
     }
+
+    const { error: dbError } = await supabase
+      .from('apsirho')
+      .delete()
+      .eq('id', item.id);
+
+    console.log('DATABASE DELETE ERROR:', dbError);
+
+    if (dbError) throw dbError;
+
+    setMessage('Archive deleted.');
+    fetchArchives();
+  } catch (err) {
+    console.error(err);
+    setMessage(err.message || 'Delete failed.');
   }
+}
 
   return (
     <AdminLayout activePage="archives">
@@ -341,7 +354,7 @@ export default function ArchiveUpload() {
                     <td>{item.tall ? 'Yes' : 'No'}</td>
                     <td>
                       <button onClick={() => startEdit(item)}>Edit</button>
-                      <button onClick={() => handleDelete(item)}>Delete</button>
+                      <button type="button" onClick={() => handleDelete(item)}>Delete</button>
                     </td>
                   </tr>
                 ))}
