@@ -27,10 +27,23 @@ export default function BrothersManager() {
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState('');
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!photoFile) {
+      setPreviewImage(form.profile_image_url || '');
+      return undefined;
+    }
+
+    const objectUrl = URL.createObjectURL(photoFile);
+    setPreviewImage(objectUrl);
+
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [photoFile, form.profile_image_url]);
 
   async function fetchData() {
     const { data: brothersData, error: brothersError } = await supabase
@@ -64,6 +77,7 @@ export default function BrothersManager() {
 
   function startEdit(brother) {
     setEditingId(brother.id);
+    setPhotoFile(null);
     setForm({
       id: brother.id,
       bond_no: brother.bond_no || '',
@@ -85,9 +99,11 @@ export default function BrothersManager() {
 
   function resetForm() {
     setEditingId(null);
+    setPhotoFile(null);
     setForm(emptyForm);
     setMessage('');
   }
+
   function makeSafeFileName(value) {
     return String(value || '')
       .toLowerCase()
@@ -96,89 +112,121 @@ export default function BrothersManager() {
       .replace(/[^a-z0-9._]/g, '');
   }
 
-function getSelectedClassName() {
-  const selectedClass = classes.find(
-    (cls) => cls.id === form.pledge_class_id
-  );
+  function getSelectedClassName() {
+    const selectedClass = classes.find(
+      (cls) => cls.id === form.pledge_class_id
+    );
 
-  return selectedClass?.name || 'uncategorized';
- }
-
-async function uploadBrotherPhoto() {
-  if (!photoFile) {
-    console.log('No new photo selected. Keeping existing URL:', form.profile_image_url);
-    return form.profile_image_url || null;
+    return selectedClass?.name || 'uncategorized';
   }
 
-  const extension = photoFile.name.split('.').pop();
-  const classFolder = makeSafeFileName(getSelectedClassName());
-  const safeBondNo = makeSafeFileName(form.bond_no || 'unknown');
-  const safeBrotherName = makeSafeFileName(form.name || 'brother');
+  async function uploadBrotherPhoto() {
+    if (!photoFile) {
+      console.log('No new photo selected. Keeping existing photo.');
+      return {
+        photoUrl: form.profile_image_url || null,
+        storagePath: form.profile_storage_path || null,
+      };
+    }
 
-  const filePath = `${classFolder}/${safeBondNo}_${safeBrotherName}.${extension}`;
+    const extension = photoFile.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const classFolder = makeSafeFileName(getSelectedClassName());
+    const safeBondNo = makeSafeFileName(form.bond_no || 'unknown');
+    const safeBrotherName = makeSafeFileName(form.name || 'brother');
 
-  console.log('Uploading brother photo to:', filePath);
+    const storagePath = `${classFolder}/${safeBondNo}_${safeBrotherName}_${Date.now()}.${extension}`;
 
-  const { data: uploadData, error: uploadError } = await supabase.storage
-    .from('brother-photos')
-    .upload(filePath, photoFile, {
-      cacheControl: '3600',
-      upsert: true,
-    });
+    console.log('Uploading brother photo to:', storagePath);
 
-  if (uploadError) throw uploadError;
+    const { error: uploadError } = await supabase.storage
+      .from('brother-photos')
+      .upload(storagePath, photoFile, {
+        cacheControl: '3600',
+        upsert: true,
+      });
 
-  const { data } = supabase.storage
-    .from('brother-photos')
-    .getPublicUrl(filePath);
+    if (uploadError) throw uploadError;
 
-  console.log('PUBLIC URL DATA:', data);
+    const { data } = supabase.storage
+      .from('brother-photos')
+      .getPublicUrl(storagePath);
 
-  return data.publicUrl;
-}
+    console.log('PUBLIC URL DATA:', data);
+
+    return {
+      photoUrl: data.publicUrl,
+      storagePath,
+    };
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const photoUrl = await uploadBrotherPhoto();
-    console.log('PHOTO FILE:', photoFile);
-    console.log('PHOTO URL:', photoUrl);
 
-    const payload = {
-      bond_no: form.bond_no,
-      name: form.name,
-      nickname: form.nickname || null,
-      pledge_class_id: form.pledge_class_id || null,
-      status: form.status,
-      profile_image_url: photoUrl,
-      profile_storage_path: form.profile_storage_path,
-      profile_image_x: Number(form.profile_image_x),
-      profile_image_y: Number(form.profile_image_y),
-      profile_image_scale: Number(form.profile_image_scale),
-      sort_order: Number(form.sort_order) || 0,
-      is_visible: form.is_visible,
-      is_minimal: form.is_minimal,
-    };
-    console.log('PAYLOAD:', payload);
-    const result = editingId
-      ? await supabase
-          .from('brothers')
-          .update(payload)
-          .eq('id', editingId)
-          .select()
-      : await supabase
-          .from('brothers')
-          .insert([payload])
-          .select();
+    try {
+      const oldStoragePath = form.profile_storage_path;
+      const uploadedPhoto = await uploadBrotherPhoto();
 
-    if (result.error) {
-      console.error(result.error);
+      console.log('PHOTO FILE:', photoFile);
+      console.log('UPLOADED PHOTO:', uploadedPhoto);
+
+      const payload = {
+        bond_no: form.bond_no,
+        name: form.name,
+        nickname: form.nickname || null,
+        pledge_class_id: form.pledge_class_id || null,
+        status: form.status,
+        profile_image_url: uploadedPhoto.photoUrl,
+        profile_storage_path: uploadedPhoto.storagePath,
+        profile_image_x: Number(form.profile_image_x ?? 50),
+        profile_image_y: Number(form.profile_image_y ?? 50),
+        profile_image_scale: Number(form.profile_image_scale ?? 1),
+        sort_order: Number(form.sort_order) || 0,
+        is_visible: form.is_visible,
+        is_minimal: form.is_minimal,
+      };
+
+      console.log('PAYLOAD:', payload);
+
+      const result = editingId
+        ? await supabase
+            .from('brothers')
+            .update(payload)
+            .eq('id', editingId)
+            .select()
+        : await supabase
+            .from('brothers')
+            .insert([payload])
+            .select();
+
+      if (result.error) {
+        console.error(result.error);
+        setMessage('Save failed. Check console.');
+        return;
+      }
+
+      if (
+        photoFile &&
+        oldStoragePath &&
+        oldStoragePath !== uploadedPhoto.storagePath
+      ) {
+        const { error: removeError } = await supabase.storage
+          .from('brother-photos')
+          .remove([oldStoragePath]);
+
+        if (removeError) {
+          console.error('Old brother photo delete failed:', removeError);
+        } else {
+          console.log('Old brother photo deleted:', oldStoragePath);
+        }
+      }
+
+      setMessage(editingId ? 'Brother updated.' : 'Brother added.');
+      resetForm();
+      fetchData();
+    } catch (error) {
+      console.error(error);
       setMessage('Save failed. Check console.');
-      return;
     }
-
-    setMessage(editingId ? 'Brother updated.' : 'Brother added.');
-    resetForm();
-    fetchData();
   }
 
   async function handleToggleVisible(brother) {
@@ -274,6 +322,7 @@ async function uploadBrotherPhoto() {
                 <option value="Memorial">Memorial</option>
               </select>
             </label>
+
             <label>
               Upload Profile Photo
               <input
@@ -282,6 +331,19 @@ async function uploadBrotherPhoto() {
                 onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
               />
             </label>
+
+            {previewImage && (
+              <div className="brothers-manager__photo-preview">
+                <img
+                  src={previewImage}
+                  alt="Profile preview"
+                  style={{
+                    objectPosition: `${form.profile_image_x ?? 50}% ${form.profile_image_y ?? 50}%`,
+                    transform: `scale(${form.profile_image_scale ?? 1})`,
+                  }}
+                />
+              </div>
+            )}
 
             <label>
               Profile Image URL
