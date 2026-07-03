@@ -49,6 +49,10 @@ export default function Brothers() {
         status: row.status,
         minimal: row.is_minimal,
         profileImageUrl: row.profile_image_url,
+        profileImageUrl: row.profile_image_url,
+        profileImageX: row.profile_image_x ?? 50,
+        profileImageY: row.profile_image_y ?? 50,
+        profileImageScale: row.profile_image_scale ?? 1,
         classNickname: pledgeClass?.nickname || '',
         classSymbol: pledgeClass?.symbol || '',
         classSortOrder: pledgeClass?.sort_order ?? 999
@@ -262,11 +266,16 @@ export default function Brothers() {
                           <div className="brothers__card-top">
                             <div className="brothers__card-avatar">
                               {b.profileImageUrl ? (
-                                <img
-                                  src={b.profileImageUrl}
-                                  alt={b.name}
-                                  className="brothers__card-avatar-img"
-                                />
+                              <img
+                                src={b.profileImageUrl}
+                                alt={b.name}
+                                className="brothers__card-avatar-img"
+                                style={{
+                                  transform: `translate(${(b.profileImageX ?? 50) - 50}%, ${
+                                    (b.profileImageY ?? 50) - 50
+                                  }%) scale(${b.profileImageScale ?? 1})`,
+                                }}
+                              />
                               ) : (
                                 initials(b.name)
                               )}

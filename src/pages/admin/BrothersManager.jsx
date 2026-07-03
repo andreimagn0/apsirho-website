@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import AdminLayout from '../../layouts/AdminLayout';
+import BrotherPhotoEditor from './BrotherPhotoEditor';
 import './BrothersManager.css';
 
 const emptyForm = {
@@ -28,6 +29,7 @@ export default function BrothersManager() {
   const [message, setMessage] = useState('');
   const [photoFile, setPhotoFile] = useState(null);
   const [previewImage, setPreviewImage] = useState('');
+  const [photoEditorOpen, setPhotoEditorOpen] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -78,6 +80,8 @@ export default function BrothersManager() {
   function startEdit(brother) {
     setEditingId(brother.id);
     setPhotoFile(null);
+    setPhotoEditorOpen(false);
+
     setForm({
       id: brother.id,
       bond_no: brother.bond_no || '',
@@ -94,12 +98,14 @@ export default function BrothersManager() {
       is_visible: brother.is_visible ?? true,
       is_minimal: brother.is_minimal ?? false,
     });
+
     setMessage('');
   }
 
   function resetForm() {
     setEditingId(null);
     setPhotoFile(null);
+    setPhotoEditorOpen(false);
     setForm(emptyForm);
     setMessage('');
   }
@@ -133,8 +139,9 @@ export default function BrothersManager() {
     const classFolder = makeSafeFileName(getSelectedClassName());
     const safeBondNo = makeSafeFileName(form.bond_no || 'unknown');
     const safeBrotherName = makeSafeFileName(form.name || 'brother');
+    const timestamp = Date.now();
 
-    const storagePath = `${classFolder}/${safeBondNo}_${safeBrotherName}_${Date.now()}.${extension}`;
+    const storagePath = `${classFolder}/${safeBondNo}_${safeBrotherName}_${timestamp}.${extension}`;
 
     console.log('Uploading brother photo to:', storagePath);
 
@@ -142,7 +149,7 @@ export default function BrothersManager() {
       .from('brother-photos')
       .upload(storagePath, photoFile, {
         cacheControl: '3600',
-        upsert: true,
+        upsert: false,
       });
 
     if (uploadError) throw uploadError;
@@ -247,6 +254,48 @@ export default function BrothersManager() {
   function getClassName(classId) {
     return classes.find((c) => c.id === classId)?.name || 'No class';
   }
+  
+  async function handleDeleteBrother(brother) {
+  const confirmed = window.confirm(
+    `Delete ${brother.name}? This will also remove their E-board role and profile image.`
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const { error: eboardError } = await supabase
+      .from('executive_board')
+      .delete()
+      .eq('brother_id', brother.id);
+
+    if (eboardError) throw eboardError;
+
+    const { error: brotherError } = await supabase
+      .from('brothers')
+      .delete()
+      .eq('id', brother.id);
+
+    if (brotherError) throw brotherError;
+
+    if (brother.profile_storage_path) {
+      const { error: storageError } = await supabase.storage
+        .from('brother-photos')
+        .remove([brother.profile_storage_path]);
+
+      if (storageError) {
+        console.error('Profile photo delete failed:', storageError);
+      }
+    }
+
+    if (editingId === brother.id) resetForm();
+
+    setMessage('Brother deleted.');
+    fetchData();
+  } catch (error) {
+    console.error(error);
+    setMessage('Delete failed. Check console.');
+  }
+}
 
   return (
     <AdminLayout activePage="brothers">
@@ -332,14 +381,24 @@ export default function BrothersManager() {
               />
             </label>
 
+            <button
+              type="button"
+              className="brothers-manager__outline-btn"
+              onClick={() => setPhotoEditorOpen(true)}
+              disabled={!previewImage}
+            >
+              Edit Photo
+            </button>
+
             {previewImage && (
               <div className="brothers-manager__photo-preview">
                 <img
                   src={previewImage}
                   alt="Profile preview"
                   style={{
-                    objectPosition: `${form.profile_image_x ?? 50}% ${form.profile_image_y ?? 50}%`,
-                    transform: `scale(${form.profile_image_scale ?? 1})`,
+                    transform: `translate(${(form.profile_image_x ?? 50) - 50}%, ${
+                      (form.profile_image_y ?? 50) - 50
+                    }%) scale(${form.profile_image_scale ?? 1})`,
                   }}
                 />
               </div>
@@ -422,6 +481,9 @@ export default function BrothersManager() {
                       <button onClick={() => handleToggleVisible(brother)}>
                         {brother.is_visible ? 'Hide' : 'Show'}
                       </button>
+                    <button onClick={() => handleDeleteBrother(brother)}>
+                      Delete
+                    </button>
                     </td>
                   </tr>
                 ))}
@@ -429,6 +491,25 @@ export default function BrothersManager() {
             </table>
           </div>
         </div>
+
+        {photoEditorOpen && (
+          <BrotherPhotoEditor
+            imageSrc={previewImage}
+            x={Number(form.profile_image_x ?? 50)}
+            y={Number(form.profile_image_y ?? 50)}
+            scale={Number(form.profile_image_scale ?? 1)}
+            onClose={() => setPhotoEditorOpen(false)}
+            onChange={(updates) =>
+              setForm((prev) => ({
+                ...prev,
+                profile_image_x: updates.x ?? prev.profile_image_x,
+                profile_image_y: updates.y ?? prev.profile_image_y,
+                profile_image_scale:
+                  updates.scale ?? prev.profile_image_scale,
+              }))
+            }
+          />
+        )}
       </div>
     </AdminLayout>
   );
