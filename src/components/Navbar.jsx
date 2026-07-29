@@ -5,7 +5,7 @@ import './Navbar.css';
 const NAV_LINKS = [
   { label: 'About', href: '#about' },
   { label: 'History', href: '#history' },
-  { label: 'Brhothers', href: '#brothers' },
+  { label: 'Brothers', href: '#brothers' },
   { label: 'Archive', href: '#archive' },
   { label: 'Newsletter', href: '#newsletter' },
   { label: 'Contact', href: '#contact' },
@@ -13,6 +13,7 @@ const NAV_LINKS = [
 
 const PAGE_ROUTES = [
   '#archive',
+  '#portal',
   '#admin-login',
   '#admin-brothers',
   '#admin-classes',
@@ -141,7 +142,7 @@ export default function Navbar() {
             <li>
               <button
                 className="navbar__link"
-                onClick={() => handleNavClick('#admin-login')}
+                onClick={() => handleNavClick('#portal')}
               >
                 Login
               </button>
