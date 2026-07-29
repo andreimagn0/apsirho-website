@@ -4,6 +4,16 @@ import AdminLayout from '../../layouts/AdminLayout';
 import BrotherPhotoEditor from './BrotherPhotoEditor';
 import './BrothersManager.css';
 
+const ALLOWED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+];
+
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp'];
+
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
+
 const emptyForm = {
   id: null,
   bond_no: '',
@@ -27,6 +37,7 @@ export default function BrothersManager() {
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('info');
   const [photoFile, setPhotoFile] = useState(null);
   const [previewImage, setPreviewImage] = useState('');
   const [photoEditorOpen, setPhotoEditorOpen] = useState(false);
@@ -60,7 +71,7 @@ export default function BrothersManager() {
 
     if (brothersError || classesError) {
       console.error(brothersError || classesError);
-      setMessage('Error loading admin data.');
+      showMessage('Error loading admin data.', 'error');
       return;
     }
 
@@ -100,14 +111,18 @@ export default function BrothersManager() {
     });
 
     setMessage('');
+    setMessageType('info');
   }
+  function resetForm({ keepMessage = false } = {}) {
+  setEditingId(null);
+  setPhotoFile(null);
+  setPhotoEditorOpen(false);
+  setForm(emptyForm);
 
-  function resetForm() {
-    setEditingId(null);
-    setPhotoFile(null);
-    setPhotoEditorOpen(false);
-    setForm(emptyForm);
+  if (!keepMessage) {
     setMessage('');
+    setMessageType('info');
+  }
   }
 
   function makeSafeFileName(value) {
@@ -128,7 +143,6 @@ export default function BrothersManager() {
 
   async function uploadBrotherPhoto() {
     if (!photoFile) {
-      console.log('No new photo selected. Keeping existing photo.');
       return {
         photoUrl: form.profile_image_url || null,
         storagePath: form.profile_storage_path || null,
@@ -143,8 +157,6 @@ export default function BrothersManager() {
 
     const storagePath = `${classFolder}/${safeBondNo}_${safeBrotherName}_${timestamp}.${extension}`;
 
-    console.log('Uploading brother photo to:', storagePath);
-
     const { error: uploadError } = await supabase.storage
       .from('brother-photos')
       .upload(storagePath, photoFile, {
@@ -158,13 +170,39 @@ export default function BrothersManager() {
       .from('brother-photos')
       .getPublicUrl(storagePath);
 
-    console.log('PUBLIC URL DATA:', data);
-
     return {
       photoUrl: data.publicUrl,
       storagePath,
     };
   }
+
+  function validatePhoto(file) {
+  if (!file) return true;
+
+  const extension = file.name.split('.').pop()?.toLowerCase();
+
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+    showMessage('Only JPG, PNG, and WebP images are allowed.', 'error');
+    return false;
+  }
+
+  if (!ALLOWED_EXTENSIONS.includes(extension)) {
+    showMessage('Unsupported image extension.', 'error');
+    return false;
+  }
+
+  if (file.size > MAX_IMAGE_SIZE) {
+    showMessage('Image must be smaller than 10 MB.', 'error');
+    return false;
+  }
+
+  return true;
+  }
+
+  function showMessage(text, type = 'info') {
+  setMessage(text);
+  setMessageType(type);
+  }   
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -172,9 +210,6 @@ export default function BrothersManager() {
     try {
       const oldStoragePath = form.profile_storage_path;
       const uploadedPhoto = await uploadBrotherPhoto();
-
-      console.log('PHOTO FILE:', photoFile);
-      console.log('UPLOADED PHOTO:', uploadedPhoto);
 
       const payload = {
         bond_no: form.bond_no,
@@ -192,8 +227,6 @@ export default function BrothersManager() {
         is_minimal: form.is_minimal,
       };
 
-      console.log('PAYLOAD:', payload);
-
       const result = editingId
         ? await supabase
             .from('brothers')
@@ -207,7 +240,7 @@ export default function BrothersManager() {
 
       if (result.error) {
         console.error(result.error);
-        setMessage('Save failed. Check console.');
+        showMessage('Save failed. Check console.', 'error');
         return;
       }
 
@@ -222,13 +255,15 @@ export default function BrothersManager() {
 
         if (removeError) {
           console.error('Old brother photo delete failed:', removeError);
-        } else {
-          console.log('Old brother photo deleted:', oldStoragePath);
         }
       }
 
-      setMessage(editingId ? 'Brother updated.' : 'Brother added.');
-      resetForm();
+      showMessage(
+        editingId ? 'Brother updated.' : 'Brother added.',
+        'success'
+      );
+
+      resetForm({ keepMessage: true });
       fetchData();
     } catch (error) {
       console.error(error);
@@ -244,7 +279,7 @@ export default function BrothersManager() {
 
     if (error) {
       console.error(error);
-      setMessage('Visibility update failed.');
+      showMessage('Visibility update failed.', 'error');
       return;
     }
 
@@ -289,11 +324,11 @@ export default function BrothersManager() {
 
     if (editingId === brother.id) resetForm();
 
-    setMessage('Brother deleted.');
+    showMessage('Brother deleted.', 'success');
     fetchData();
   } catch (error) {
     console.error(error);
-    setMessage('Delete failed. Check console.');
+    showMessage('Delete failed. Check console.', 'error');
   }
 }
 
@@ -311,7 +346,13 @@ export default function BrothersManager() {
           </button>
         </header>
 
-        {message && <p className="brothers-manager__message">{message}</p>}
+        {message && (
+          <p
+            className={`brothers-manager__message brothers-manager__message--${messageType}`}
+          >
+            {message}
+          </p>
+        )}
 
         <div className="brothers-manager__grid">
           <form className="brothers-manager__form" onSubmit={handleSubmit}>
@@ -376,8 +417,22 @@ export default function BrothersManager() {
               Upload Profile Photo
               <input
                 type="file"
-                accept="image/*"
-                onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+
+                  if (!file) return;
+
+                  if (!validatePhoto(file)) {
+                    e.target.value = '';
+                    setPhotoFile(null);
+                    return;
+                  }
+
+                  setMessage('');
+                  setMessageType('info');
+                  setPhotoFile(file);
+                }}
               />
             </label>
 
@@ -449,7 +504,7 @@ export default function BrothersManager() {
               <button type="submit">
                 {editingId ? 'Save Changes' : 'Add Brother'}
               </button>
-              <button type="button" onClick={resetForm}>
+              <button type="button" onClick={() => resetForm()}>
                 Cancel
               </button>
             </div>

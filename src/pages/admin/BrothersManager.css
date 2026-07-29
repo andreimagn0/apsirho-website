@@ -22,10 +22,28 @@
 }
 
 .brothers-manager__message {
-  background: var(--white);
-  border-left: 3px solid var(--gold);
   padding: 0.8rem 1rem;
   margin-bottom: 1rem;
+  border-left: 3px solid;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+}
+
+.brothers-manager__message--success {
+  background: rgba(46, 125, 50, 0.1);
+  border-left-color: #2e7d32;
+  color: #1f5d25;
+}
+
+.brothers-manager__message--error {
+  background: rgba(192, 57, 43, 0.1);
+  border-left-color: #c0392b;
+  color: #962d22;
+}
+
+.brothers-manager__message--info {
+  background: var(--white);
+  border-left-color: var(--gold);
   color: var(--navy);
 }
 

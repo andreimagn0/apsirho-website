@@ -28,9 +28,6 @@ export default function Archive() {
     .select('*')
     .order('event_date', { ascending: false });
 
-    console.log('Fetched archive items:', data);
-    console.log('Supabase error:', error);
-
     if (error) {
       console.error('Supabase error:', error);
     } else {

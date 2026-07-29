@@ -17,11 +17,6 @@ export default function About() {
       .from('brothers')
       .select('*');
 
-    console.log('EBOARD DATA:', eboardData);
-    console.log('EBOARD ERROR:', eboardError);
-    console.log('BROTHERS DATA:', brothersData);
-    console.log('BROTHERS ERROR:', brothersError);
-
     if (eboardError || brothersError) {
       console.error('Error fetching executive board:', eboardError || brothersError);
       return;
@@ -36,12 +31,15 @@ export default function About() {
     const mappedBoard = eboardData.map((row) => {
       const brother = brothersById[row.brother_id];
 
-      return {
-        id: row.id,
-        role: row.position_title,
-        name: brother?.name || 'Vacant',
-        profileImageUrl: brother?.profile_image_url || null,
-      };
+    return {
+      id: row.id,
+      role: row.position_title,
+      name: brother?.name || 'Vacant',
+      profileImageUrl: brother?.profile_image_url || null,
+      profileImageX: brother?.profile_image_x ?? 50,
+      profileImageY: brother?.profile_image_y ?? 50,
+      profileImageScale: brother?.profile_image_scale ?? 1,
+    };
     });
 
   setEboard(mappedBoard);
@@ -135,6 +133,11 @@ export default function About() {
                       src={member.profileImageUrl}
                       alt={member.name}
                       className="about__eboard-avatar-img"
+                      style={{
+                        transform: `translate(${(member.profileImageX ?? 50) - 50}%, ${
+                          (member.profileImageY ?? 50) - 50
+                        }%) scale(${member.profileImageScale ?? 1})`,
+                      }}
                     />
                   ) : (
                     initials(member.name)

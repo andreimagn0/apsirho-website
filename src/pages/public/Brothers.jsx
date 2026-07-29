@@ -49,7 +49,6 @@ export default function Brothers() {
         status: row.status,
         minimal: row.is_minimal,
         profileImageUrl: row.profile_image_url,
-        profileImageUrl: row.profile_image_url,
         profileImageX: row.profile_image_x ?? 50,
         profileImageY: row.profile_image_y ?? 50,
         profileImageScale: row.profile_image_scale ?? 1,
