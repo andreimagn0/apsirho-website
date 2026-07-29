@@ -49,7 +49,7 @@ export default function App() {
 
       if (hash === '#archive') {
         setPage('archive');
-      } else if (hash === '#admin-login') {
+      } else if (hash === '#portal') {
         setPage('admin-login');
       } else if (hash === '#forgot-password') {
         setPage('forgot-password');
@@ -91,7 +91,7 @@ export default function App() {
     );
   }
 
-  if (page === 'admin-login') {
+  if (page === 'portal') {
     return (
       <>
         <Navbar />

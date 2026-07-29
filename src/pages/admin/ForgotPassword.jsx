@@ -54,7 +54,7 @@ export default function ForgotPassword() {
   }
 
   function returnToLogin() {
-    window.location.hash = 'admin-login';
+    window.location.hash = 'portal';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

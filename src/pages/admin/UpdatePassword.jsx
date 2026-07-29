@@ -144,7 +144,7 @@ export default function UpdatePassword() {
 
   function returnToLogin() {
     window.history.replaceState({}, document.title, window.location.pathname);
-    window.location.hash = 'admin-login';
+    window.location.hash = 'portal';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 

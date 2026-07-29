@@ -53,7 +53,7 @@ export default function AdminLogin() {
       <div className="admin-login__shell">
         <div className="admin-login__card">
           <p className="admin-login__eyebrow">Alpha Psi Rho</p>
-          <h1 className="admin-login__title">Brother Portal</h1>
+          <h2 className="admin-login__title">Brother Portal</h2>
           <div className="admin-login__divider" />
 
           <p className="admin-login__subtitle">
