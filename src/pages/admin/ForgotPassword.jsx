@@ -2,46 +2,59 @@ import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import './AdminLogin.css';
 
-export default function AdminLogin() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState('');
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  async function handleLogin(event) {
+  async function handleResetRequest(event) {
     event.preventDefault();
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      setMessage('Enter the email address associated with your account.');
+      setMessageType('error');
+      return;
+    }
 
     setLoading(true);
     setMessage('');
     setMessageType('');
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
+    const redirectUrl =
+      `${window.location.origin}${window.location.pathname}` +
+      '?password-recovery=true';
+
+    const { error } = await supabase.auth.resetPasswordForEmail(
+      normalizedEmail,
+      { redirectTo: redirectUrl }
+    );
+
+    setLoading(false);
 
     if (error) {
-      console.error('Login failed:', error);
+      console.error('Password reset request failed:', error);
       setMessage(
         error.status === 429
-          ? 'Too many login attempts. Please wait before trying again.'
-          : 'Invalid email or password.'
+          ? 'Too many reset requests were submitted. Please wait before trying again.'
+          : 'We could not send the reset email. Please try again later.'
       );
       setMessageType('error');
-      setLoading(false);
       return;
     }
 
-    setMessage('Logged in successfully.');
+    setSubmitted(true);
+    setMessage(
+      'If an account exists for that email, a password reset link has been sent.'
+    );
     setMessageType('success');
-    window.location.hash = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setLoading(false);
   }
 
-  function openForgotPassword() {
-    window.location.hash = 'forgot-password';
+  function returnToLogin() {
+    window.location.hash = 'admin-login';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -53,14 +66,15 @@ export default function AdminLogin() {
       <div className="admin-login__shell">
         <div className="admin-login__card">
           <p className="admin-login__eyebrow">Alpha Psi Rho</p>
-          <h1 className="admin-login__title">Brother Portal</h1>
+          <h1 className="admin-login__title">Reset Your Password</h1>
           <div className="admin-login__divider" />
 
           <p className="admin-login__subtitle">
-            Authorized members can sign in to manage protected chapter content.
+            Enter the email associated with your administrator account. We will
+            send a secure link to create a new password.
           </p>
 
-          <form onSubmit={handleLogin} className="admin-login__form">
+          <form onSubmit={handleResetRequest} className="admin-login__form">
             <label className="admin-login__label">
               Email
               <input
@@ -69,36 +83,17 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 autoComplete="email"
-                required
-              />
-            </label>
-
-            <label className="admin-login__label">
-              Password
-              <input
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                autoComplete="current-password"
+                disabled={loading || submitted}
                 required
               />
             </label>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || submitted}
               className="admin-login__button"
             >
-              {loading ? 'Logging in...' : 'Log in'}
-            </button>
-
-            <button
-              type="button"
-              className="admin-login__text-button"
-              onClick={openForgotPassword}
-            >
-              Forgot your password?
+              {loading ? 'Sending...' : 'Send Reset Link'}
             </button>
 
             {message && (
@@ -111,6 +106,14 @@ export default function AdminLogin() {
                 {message}
               </p>
             )}
+
+            <button
+              type="button"
+              className="admin-login__text-button admin-login__text-button--back"
+              onClick={returnToLogin}
+            >
+              Return to login
+            </button>
           </form>
         </div>
       </div>

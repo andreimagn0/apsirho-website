@@ -1,16 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './index.css';
+
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import Footer from './components/Footer';
+
 import About from './pages/public/About';
 import History from './pages/public/History';
 import Brothers from './pages/public/Brothers';
 import Newsletter from './pages/public/Newsletter';
 import Contact from './pages/public/Contact';
-import Footer from './components/Footer';
 import Archive from './pages/public/Archive';
 import './pages/public/Archive.css';
+
 import AdminLogin from './pages/admin/AdminLogin';
+import ForgotPassword from './pages/admin/ForgotPassword';
+import UpdatePassword from './pages/admin/UpdatePassword';
+
 import ArchiveUpload from './pages/admin/ArchiveUpload';
 import BrothersManager from './pages/admin/BrothersManager';
 import ProtectedAdminRoute from './pages/admin/ProtectedAdminRoute';
@@ -22,13 +28,33 @@ export default function App() {
   const [page, setPage] = useState('home');
 
   useEffect(() => {
-    const handleHash = () => {
+    function handleLocationChange() {
+      const queryParameters = new URLSearchParams(
+        window.location.search
+      );
+
+      const isPasswordRecovery =
+        queryParameters.get('password-recovery') === 'true';
+
+      /*
+       * The recovery query parameter takes priority because Supabase may
+       * temporarily use the URL hash to restore the recovery session.
+       */
+      if (isPasswordRecovery) {
+        setPage('update-password');
+        return;
+      }
+
       const hash = window.location.hash;
 
       if (hash === '#archive') {
         setPage('archive');
       } else if (hash === '#admin-login') {
         setPage('admin-login');
+      } else if (hash === '#forgot-password') {
+        setPage('forgot-password');
+      } else if (hash === '#update-password') {
+        setPage('update-password');
       } else if (hash === '#admin-brothers') {
         setPage('admin-brothers');
       } else if (hash === '#admin-classes') {
@@ -42,12 +68,17 @@ export default function App() {
       } else {
         setPage('home');
       }
+    }
+
+    window.addEventListener('hashchange', handleLocationChange);
+    window.addEventListener('popstate', handleLocationChange);
+
+    handleLocationChange();
+
+    return () => {
+      window.removeEventListener('hashchange', handleLocationChange);
+      window.removeEventListener('popstate', handleLocationChange);
     };
-
-    window.addEventListener('hashchange', handleHash);
-    handleHash();
-
-    return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
   if (page === 'archive') {
@@ -70,12 +101,32 @@ export default function App() {
     );
   }
 
+  if (page === 'forgot-password') {
+    return (
+      <>
+        <Navbar />
+        <ForgotPassword />
+        <Footer />
+      </>
+    );
+  }
+
+  if (page === 'update-password') {
+    return (
+      <>
+        <Navbar />
+        <UpdatePassword />
+        <Footer />
+      </>
+    );
+  }
+
   if (page === 'admin-brothers') {
-  return (
-    <ProtectedAdminRoute>
-      <BrothersManager />
-    </ProtectedAdminRoute>
-  );
+    return (
+      <ProtectedAdminRoute>
+        <BrothersManager />
+      </ProtectedAdminRoute>
+    );
   }
 
   if (page === 'admin-classes') {
@@ -85,6 +136,7 @@ export default function App() {
       </ProtectedAdminRoute>
     );
   }
+
   if (page === 'admin-eboard') {
     return (
       <ProtectedAdminRoute>
@@ -92,6 +144,7 @@ export default function App() {
       </ProtectedAdminRoute>
     );
   }
+
   if (page === 'admin-archives') {
     return (
       <ProtectedAdminRoute>
@@ -99,6 +152,7 @@ export default function App() {
       </ProtectedAdminRoute>
     );
   }
+
   if (page === 'admin-newsletter') {
     return (
       <ProtectedAdminRoute>
@@ -106,9 +160,11 @@ export default function App() {
       </ProtectedAdminRoute>
     );
   }
+
   return (
     <>
       <Navbar />
+
       <main>
         <Hero />
         <About />
@@ -117,6 +173,7 @@ export default function App() {
         <Newsletter />
         <Contact />
       </main>
+
       <Footer />
     </>
   );
