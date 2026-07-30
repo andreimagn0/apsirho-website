@@ -1,115 +1,204 @@
-# Alpha Psi Rho — Alpha Chapter Website
-**San Diego State University**
 
-A clean, collegiate website for the Alpha Chapter of Alpha Psi Rho fraternity. Built with React.
+# Alpha Psi Rho — Alpha Chapter Platform
+
+> Production-ready website and content management system built with **React, Vite, Supabase, PostgreSQL, and Vercel**.
+
+**Live Site:** https://alphapsirho.org
 
 ---
 
-## 🗂 Project Structure
+## Project Summary
 
+Alpha Psi Rho is a production-ready web platform developed for the Alpha Chapter of Alpha Psi Rho at San Diego State University. The platform combines a modern public-facing website with a secure Brother Portal that enables chapter leadership to manage organizational content through a custom content management system (CMS) instead of modifying source code.
+
+Built with React, Vite, Supabase, PostgreSQL, and Vercel, the project emphasizes maintainability, security, and long-term sustainability. Authentication, authorization, database access, and object storage are handled through Supabase, while deployment is automated through Vercel.
+
+---
+
+## Project Motivation
+
+Alpha Psi Rho's Alpha Chapter is a growing fraternity with a strong emphasis on brotherhood, academics, prosperity, and strength. As the chapter expanded, it lacked a modern platform that accurately represented those values while also providing secure tools for members to manage chapter resources.
+
+This project was created to solve both challenges by combining a professional public-facing website with a secure Brother Portal. The public website introduces prospective members, alumni, and visitors to the organization, while the Brother Portal provides authenticated members with secure access to chapter management tools, archives, newsletters, and internal resources.
+
+As a member of the chapter, I wanted to build a platform that represented the professionalism of the organization while creating infrastructure that would continue to benefit future generations of brothers. Rather than developing a simple informational website, I focused on building a secure, maintainable content management system that chapter leadership can continue to use and expand without requiring changes to the underlying codebase.
+
+---
+
+## Engineering Highlights
+
+- Production-ready Single Page Application (SPA)
+- Component-based frontend architecture using React + Vite
+- Custom Content Management System (CMS)
+- Supabase Authentication with password recovery
+- Role-Based Access Control (RBAC)
+- PostgreSQL Row Level Security (RLS)
+- Secure cloud file storage with Supabase Storage
+- Responsive desktop and mobile experience
+- Secure CRUD operations across administrative modules
+- Production deployment with GitHub, Vercel, and a custom domain
+
+---
+
+## Technology Stack
+
+### Frontend
+- React
+- Vite
+- JavaScript (ES6+)
+- HTML5
+- CSS3
+
+### Backend
+- Supabase
+
+### Database
+- PostgreSQL
+- Row Level Security (RLS)
+
+### Authentication
+- Supabase Auth
+- Session Management
+- Password Recovery
+
+### Storage
+- Supabase Storage
+
+### Deployment
+- Vercel
+- GitHub
+- Git
+
+---
+
+## Feature Overview
+
+### Public Website
+- Chapter information
+- Brother directory
+- Executive board
+- Archive
+- Newsletter
+- Contact page
+
+### Brother Portal
+- Secure login
+- Password recovery
+- Protected routes
+
+### CMS
+- Brother management
+- Pledge class management
+- Executive board management
+- Archive management
+- Newsletter management
+
+### Media
+- Image upload
+- Image replacement
+- Non-destructive image framing
+- Automatic storage cleanup
+
+### Security
+- Database-level authorization
+- Upload validation
+- Storage policies
+- Approved administrator workflow
+
+---
+
+## Architecture Overview
+
+```text
+Browser
+   │
+React + Vite
+   │
+Supabase Client
+   ├── Authentication
+   ├── PostgreSQL (RLS)
+   └── Storage
 ```
+
+See `docs/ARCHITECTURE.md` for the complete system design.
+
+---
+
+## Project Structure
+
+```text
 src/
   components/
-    Navbar.jsx / .css       ← Sticky nav with mobile menu
-    Hero.jsx / .css         ← Full-screen landing section
-    About.jsx / .css        ← Mission statement + exec board
-    History.jsx / .css      ← Timeline of fraternity history
-    Brothers.jsx / .css     ← Filterable active brothers roster
-    Newsletter.jsx / .css   ← Archive + email signup
-    Contact.jsx / .css      ← Rush steps + contact form
-    Footer.jsx / .css       ← Links, contact, motto
-  App.jsx                   ← Assembles all sections
-  index.js                  ← React entry point
-  index.css                 ← Global styles + design tokens
-public/
-  index.html                ← HTML shell + Google Fonts
+  pages/
+    public/
+    admin/
+  lib/
+docs/
+screenshots/
+diagrams/
 ```
 
 ---
 
-## ✏️ Customizing Content
-
-### Brothers Roster (`src/components/Brothers.jsx`)
-Replace the `BROTHERS` array with your actual roster:
-```js
-const BROTHERS = [
-  { name: 'Full Name', year: 'Senior', major: 'Major', pledge: 'Fall 2023' },
-  // ...
-];
-```
-
-### Executive Board (`src/components/About.jsx`)
-Update the array inside `about__eboard-grid`:
-```js
-{ role: 'President', name: 'Your Name Here' },
-```
-
-### History Timeline (`src/components/History.jsx`)
-Replace the `TIMELINE` array with your chapter's actual history and founding dates.
-
-### Newsletter Issues (`src/components/Newsletter.jsx`)
-Replace the `ISSUES` array and update `link` fields to point to actual PDF/page URLs.
-
-### Contact Info (`src/components/Contact.jsx` + `Footer.jsx`)
-Update the email address `sdsuapsirho@gmail.com` and social media links (`#` placeholders).
-
-### Colors / Fonts (`src/index.css`)
-All design tokens live in `:root {}` — tweak `--navy`, `--gold`, fonts, etc. there.
-
----
-
-## 🚀 Running Locally
+## Getting Started
 
 ```bash
+git clone <repository>
+cd apsirho-website
 npm install
-npm start
-# Opens at http://localhost:3000
+npm run dev
 ```
 
----
+Environment variables:
 
-## 🌐 Deploying to Vercel (Free + Custom Domain)
+```env
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_ANON_KEY=your_publishable_key
+```
 
-### Step 1 — Push to GitHub
-1. Create a free account at [github.com](https://github.com)
-2. Create a new repository called `apsirho-website`
-3. Run these commands in your project folder:
+Build:
+
 ```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin https://github.com/YOUR_USERNAME/apsirho-website.git
-git push -u origin main
+npm run build
+npm run preview
 ```
-
-### Step 2 — Deploy on Vercel
-1. Go to [vercel.com](https://vercel.com) and sign in with GitHub
-2. Click **"Add New Project"**
-3. Import your `apsirho-website` repository
-4. Leave all settings as default — Vercel auto-detects React
-5. Click **Deploy**
-6. Your site is now live at `apsirho-website.vercel.app` 🎉
-
-### Step 3 — Buy a Custom Domain (~$12/year)
-Recommended registrars: [Namecheap](https://namecheap.com) or [Porkbun](https://porkbun.com)
-
-Suggested domains:
-- `sdsuapsirho.org`
-- `apsirhoalpha.org`
-- `apsirhosdsu.com`
-
-### Step 4 — Connect Domain to Vercel
-1. In your Vercel project, go to **Settings → Domains**
-2. Add your custom domain (e.g. `sdsuapsirho.org`)
-3. Copy the DNS records Vercel gives you
-4. In your domain registrar's DNS settings, add those records
-5. Wait 10–30 min for DNS to propagate — done! ✅
 
 ---
 
-## 🔧 Future Enhancements
-- [ ] Add real brother photos (replace initials avatars)
-- [ ] Connect contact form to Formspree or EmailJS (free)
-- [ ] Add a photo gallery / events page
-- [ ] Connect newsletter signup to Mailchimp
-- [ ] Add Google Calendar embed for events
+## Documentation
+
+Additional documentation:
+
+- ARCHITECTURE.md
+- SECURITY.md
+- DATABASE.md
+- STORAGE.md
+- DEPLOYMENT.md
+- ADMIN_GUIDE.md
+- CHANGELOG.md
+
+---
+
+## Roadmap
+
+### Version 1.1
+- Resend SMTP
+- Cloudflare Turnstile
+- Open Graph metadata
+- Favicon improvements
+
+### Version 1.2
+- Alumni directory
+- Search
+- Mobile UX improvements
+
+### Future
+- Event management
+- Expanded roles
+- Audit logging
+
+---
+
+## License
+
+MIT

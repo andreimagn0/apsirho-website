@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 
-const CATEGORIES = ['Rush', 'Events', 'Formals', 'Retreats', 'Pledge Classes', 'Candids'];
+const CATEGORIES = ['Rush', 'Events', 'Formals', 'Retreats', 'Classes', 'Candids'];
 
 const EMPTY = { title: '', category: '', year: new Date().getFullYear().toString(), tall: false };
 
